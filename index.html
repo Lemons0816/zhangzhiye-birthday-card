@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生日礼物</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Ma Shan Zheng', cursive;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            position: relative;
+            z-index: 10;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        
+        .header {
+            margin-bottom: 40px;
+            position: relative;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            color: #e84393;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 10px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        h1:after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 4px;
+            background: linear-gradient(to right, #e84393, #fd79a8);
+            border-radius: 2px;
+        }
+        
+        .subtitle {
+            font-size: 1.8rem;
+            color: #e17055;
+            font-family: 'Dancing Script', cursive;
+            margin-top: 15px;
+        }
+        
+        .envelope-container {
+            display: flex;
+            justify-content: center;
+            margin: 40px 0;
+        }
+        
+        .letter-container {
+            position: relative;
+            width: 350px;
+            height: 280px;
+            cursor: pointer;
+            perspective: 1000px;
+        }
+        
+        .envelope {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            transition: transform 0.6s ease;
+            z-index: 30;
+            transform-origin: bottom center;
+        }
+        
+        .envelope:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 140px 175px 0 175px;
+            border-color: #ff7675 transparent transparent transparent;
+            z-index: 5;
+        }
+        
+        .envelope .heart {
+            font-size: 4rem;
+            color: #ff6b6b;
+            z-index: 10;
+            animation: heartbeat 1.5s infinite;
+            text-shadow: 0 0 10px rgba(255, 107, 107, 0.7);
+        }
+        
+        .envelope .text {
+            font-size: 1.8rem;
+            color: white;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+            margin-top: 20px;
+            z-index: 10;
+            font-family: 'Dancing Script', cursive;
+        }
+        
+        .letter-content {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, #fff9db, #ffe8cc);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+            transform: rotateX(90deg);
+            transform-origin: bottom center;
+            transition: transform 0.8s ease;
+            z-index: 20;
+            overflow: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .letter-content::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .letter-content::-webkit-scrollbar-track {
+            background: rgba(255, 182, 193, 0.3);
+            border-radius: 10px;
+        }
+        
+        .letter-content::-webkit-scrollbar-thumb {
+            background: #ff9a9e;
+            border-radius: 10px;
+        }
+        
+        .letter-content h3 {
+            text-align: center;
+            color: #e84393;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            border-bottom: 2px dashed #ff9a9e;
+            padding-bottom: 15px;
+        }
+        
+        .letter-content p {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: #5a3e36;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        
+        .signature {
+            margin-top: auto;
+            text-align: right;
+            font-family: 'Dancing Script', cursive;
+            font-size: 2rem;
+            color: #e84393;
+            padding-top: 20px;
+        }
+        
+        .letter-container.open .envelope {
+            transform: rotateX(-180deg);
+            box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .letter-container.open .letter-content {
+            transform: rotateX(0deg);
+        }
+        
+        .hint {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 1.3rem;
+            color: #e17055;
+            animation: pulse 2s infinite;
+        }
+        
+        .decoration {
+            position: absolute;
+            font-size: 1.8rem;
+            color: #ff6b6b;
+            z-index: 1;
+            animation: falling 10s linear infinite;
+            opacity: 0.8;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px dashed #ff9a9e;
+            color: #e84393;
+            font-size: 1.2rem;
+        }
+        
+        .birthday-text {
+            font-size: 1.5rem;
+            color: #e17055;
+            margin-top: 30px;
+            font-family: 'Dancing Script', cursive;
+            line-height: 1.8;
+        }
+        
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        
+        @keyframes falling {
+            0% { 
+                transform: translateY(-20px) rotate(0deg); 
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 0.8;
+            }
+            100% { 
+                transform: translateY(100vh) rotate(360deg); 
+                opacity: 0;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.8rem;
+            }
+            
+            .subtitle {
+                font-size: 1.5rem;
+            }
+            
+            .letter-container {
+                width: 320px;
+                height: 260px;
+            }
+            
+            .letter-content {
+                padding: 25px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .letter-container {
+                width: 280px;
+                height: 240px;
+            }
+            
+            .letter-content {
+                padding: 20px;
+            }
+            
+            .letter-content h3 {
+                font-size: 1.8rem;
+            }
+            
+            .letter-content p {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 飘落的装饰 -->
+    <div class="decoration">❤</div>
+    <div class="decoration">✦</div>
+    <div class="decoration">❉</div>
+    <div class="decoration">❀</div>
+    <div class="decoration">❤</div>
+    <div class="decoration">✦</div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>生日快乐！</h1>
+            <div class="subtitle">一份特别的心意给特别的你</div>
+        </div>
+        
+        <div class="birthday-text">
+            <p>打开信封，接收我最真挚的祝福</p>
+        </div>
+        
+        <div class="envelope-container">
+            <div class="letter-container" id="letter">
+                <div class="envelope">
+                    <div class="heart">❤</div>
+                    <div class="text">点击打开</div>
+                </div>
+                <div class="letter-content">
+                    <h3>给张芷烨的生日礼物</h3>
+                    <p>张芷烨，</p>
+                    <p>在这个特别的日子里，我想送上最真挚的祝福！</p>
+                    <p>愿你的生日充满欢笑和温馨，愿新的一年带给你无尽的幸福和美好。</p>
+                    <p>愿你的梦想都能实现。</p>
+                    <div class="signature">你的同班同学</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="hint">
+            <i class="fas fa-hand-point-up"></i> 点击信封查看生日祝福 <i class="fas fa-hand-point-up"></i>
+        </div>
+        
+        <div class="footer">
+            <p>为你制作的生日贺卡 </p>
+            <p><i class="fas fa-heart"></i> 愿幸福永远伴随你 <i class="fas fa-heart"></i></p>
+        </div>
+    </div>
+
+    <script>
+        // 信封点击交互
+        const letter = document.getElementById('letter');
+        letter.addEventListener('click', function() {
+            this.classList.toggle('open');
+            
+            // 更新提示文字
+            const hint = document.querySelector('.hint');
+            if (this.classList.contains('open')) {
+                hint.innerHTML = '<i class="fas fa-hand-point-down"></i> 点击任意位置关闭信件 <i class="fas fa-hand-point-down"></i>';
+            } else {
+                hint.innerHTML = '<i class="fas fa-hand-point-up"></i> 点击信封查看生日祝福 <i class="fas fa-hand-point-up"></i>';
+            }
+        });
+        
+        // 点击任意位置关闭信件
+        document.addEventListener('click', function(event) {
+            if (!letter.contains(event.target) && letter.classList.contains('open')) {
+                letter.classList.remove('open');
+                const hint = document.querySelector('.hint');
+                hint.innerHTML = '<i class="fas fa-hand-point-up"></i> 点击信封查看生日祝福 <i class="fas fa-hand-point-up"></i>';
+            }
+        });
+        
+        // 创建更多飘落装饰
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.querySelector('body');
+            const decorations = ['❤', '✦', '❉', '❀', '🎂', '🎁', '🎈'];
+            
+            for (let i = 0; i < 25; i++) {
+                const decor = document.createElement('div');
+                decor.classList.add('decoration');
+                decor.innerHTML = decorations[Math.floor(Math.random() * decorations.length)];
+                decor.style.left = Math.random() * 100 + 'vw';
+                decor.style.animationDelay = Math.random() * 10 + 's';
+                decor.style.fontSize = (Math.random() * 20 + 15) + 'px';
+                container.appendChild(decor);
+            }
+        });
+    </script>
+</body>
+</html>
